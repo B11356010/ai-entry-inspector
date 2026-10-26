@@ -39,7 +39,7 @@ if uploaded_file is not None:
 
     st.success("照片上傳成功！")
 
-   st.subheader("🔍 AI 辨識結果")
+    st.subheader("🔍 AI 辨識結果")
     
     with st.spinner("AI 正在分析照片，首次執行可能需要較久時間..."):
         try:
