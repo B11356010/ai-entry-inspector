@@ -21,7 +21,8 @@ def detect_objects(image):
 
     results = model.predict(
         source=image,
-        conf=0.25,
+        conf=0.10,
+        imgsz=1024,
         verbose=False
     )
 
