@@ -38,8 +38,22 @@ if uploaded_file is not None:
 
     st.success("照片上傳成功！")
 
-    st.subheader("🔍 AI 辨識結果")
-    st.write("下一步將在這裡加入 AI 影像辨識模型。")
+   st.subheader("🔍 AI 辨識結果")
+
+with st.spinner("AI 正在分析照片，首次執行可能需要較久時間..."):
+    try:
+        results = recognize_image(image)
+
+        for i, item in enumerate(results, start=1):
+            st.write(
+                f"{i}. {item['label']} "
+                f"（信心分數：{item['score']:.1%}）"
+            )
+
+    except Exception as e:
+        st.error("目前無法完成辨識，請稍後再試。")
+        st.caption(f"錯誤資訊：{e}")
+
 
     st.subheader("📋 入境規定提醒")
     st.write("辨識物品後，系統將顯示相關官方規定。")
