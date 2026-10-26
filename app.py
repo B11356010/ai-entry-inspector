@@ -1,4 +1,4 @@
-from image_model import recognize_image
+
 import streamlit as st
 from PIL import Image
 from image_model import detect_objects
