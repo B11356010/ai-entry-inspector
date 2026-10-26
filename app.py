@@ -1,6 +1,7 @@
 from image_model import recognize_image
 import streamlit as st
 from PIL import Image
+from image_model import recognize_image
 
 st.set_page_config(
     page_title="AI 入境物品檢查系統",
@@ -38,31 +39,31 @@ if uploaded_file is not None:
 
     st.success("照片上傳成功！")
 
-   st.subheader("🔍 AI 辨識結果")
+    st.subheader("🔍 AI 辨識結果")
 
-with st.spinner("AI 正在分析照片，首次執行可能需要較久時間..."):
-    try:
-        results = recognize_image(image)
+    with st.spinner("AI 正在分析照片，首次執行可能需要較久時間..."):
+        try:
+            results = recognize_image(image)
 
-        for i, item in enumerate(results, start=1):
-            st.write(
-                f"{i}. {item['label']} "
-                f"（信心分數：{item['score']:.1%}）"
-            )
+            for i, item in enumerate(results, start=1):
+                st.write(
+                    f"{i}. {item['label']} "
+                    f"（信心分數：{item['score']:.1%}）"
+                )
 
-    except Exception as e:
-        st.error("目前無法完成辨識，請稍後再試。")
-        st.caption(f"錯誤資訊：{e}")
-
+        except Exception as e:
+            st.error("目前無法完成辨識，請稍後再試。")
+            st.caption(f"錯誤資訊：{e}")
 
     st.subheader("📋 入境規定提醒")
-    st.write("辨識物品後，系統將顯示相關官方規定。")
+    st.write(
+        "請依照辨識出的物品種類，"
+        "進一步確認台灣官方入境及檢疫規定。"
+    )
 
 else:
     st.caption("請先上傳照片，開始測試系統。")
 
 st.divider()
 
-st.caption(
-    "課程期末專題｜AI 入境物品檢查系統"
-)
+st.caption("課程期末專題｜AI 入境物品檢查系統")
