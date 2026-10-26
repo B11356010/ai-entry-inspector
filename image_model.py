@@ -1,54 +1,102 @@
+"""
+image_model.py
+行李物品辨識模組
+"""
 
-from ultralytics import YOLO
-from PIL import Image
+import warnings
 
-_model = None
+import torch
+from PIL import Image, ImageDraw
+from transformers import pipeline
 
 
-def get_model():
-    global _model
+MODEL_NAME = "facebook/detr-resnet-50"
 
-    if _model is None:
-        _model = YOLO("yolo26n.pt")
+# 延遲載入：第一次呼叫時才載入模型
+_detector = None
 
-    return _model
+
+def _get_detector():
+    """載入並重複使用物件偵測模型。"""
+    global _detector
+
+    if _detector is None:
+        device = 0 if torch.cuda.is_available() else -1
+
+        _detector = pipeline(
+            task="object-detection",
+            model=MODEL_NAME,
+            device=device,
+        )
+
+    return _detector
 
 
 def detect_objects(image):
-    """偵測圖片中的多個物品，回傳辨識清單和標記後的圖片。"""
+    """
+    輸入：
+        image: PIL Image
 
-    model = get_model()
+    回傳：
+        detections: list[dict]
+        annotated_image: PIL Image
 
-    results = model.predict(
-        source=image,
-        conf=0.25,
-        imgsz=1024,
-        iou=0.45,
-        verbose=False
-    )
+    辨識失敗時回傳空清單及原圖副本。
+    """
 
-    # 即使沒有偵測結果，也回傳兩個值
-    if not results:
-        return [], image
+    if not isinstance(image, Image.Image):
+        raise TypeError("image 必須是 PIL Image 物件")
 
-    result = results[0]
+    # 保留原圖，並統一使用 RGB 格式
+    annotated_image = image.convert("RGB").copy()
     detections = []
 
-    for box in result.boxes:
-        class_id = int(box.cls[0].item())
-        label = result.names[class_id]
-        score = float(box.conf[0].item())
+    try:
+        detector = _get_detector()
+        results = detector(annotated_image)
 
-        detections.append({
-            "label": label,
-            "score": score
-        })
+        draw = ImageDraw.Draw(annotated_image)
 
-    # YOLO 的繪圖結果是 BGR，需要轉成 RGB
-    annotated_array = result.plot()
-    annotated_image = Image.fromarray(
-        annotated_array[:, :, ::-1].copy()
-    )
+        for item in results:
+            box = item["box"]
 
-    # 一定回傳兩個值
-    return detections, annotated_image
+            x1 = max(0, min(image.width, round(box["xmin"])))
+            y1 = max(0, min(image.height, round(box["ymin"])))
+            x2 = max(0, min(image.width, round(box["xmax"])))
+            y2 = max(0, min(image.height, round(box["ymax"])))
+
+            if x2 <= x1 or y2 <= y1:
+                continue
+
+            label = str(item["label"])
+            score = float(item["score"])
+
+            detections.append({
+                "label": label,
+                "score": score,
+                "box": [x1, y1, x2, y2],
+            })
+
+            draw.rectangle(
+                [x1, y1, x2, y2],
+                outline="red",
+                width=3,
+            )
+
+            draw.text(
+                (x1, max(0, y1 - 18)),
+                f"{label} {score:.2f}",
+                fill="red",
+            )
+
+        return detections, annotated_image
+
+    except Exception as e:
+        warnings.warn(
+            f"物品辨識失敗：{type(e).__name__}: {e}",
+            RuntimeWarning,
+        )
+
+        # 維持兩個回傳值，避免主程式解包失敗
+        return [], annotated_image
+
