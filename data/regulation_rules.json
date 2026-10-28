@@ -1,1 +1,16 @@
-
+[
+    {
+    "id": "meat_products",
+    "category": "animal_quarantine",
+    "keywords": [
+      "肉乾",
+      "豬肉乾",
+      "肉鬆",
+      "香腸",
+      "火腿"
+    ],
+    "summary": "肉類及加工肉製品涉及動物檢疫限制，須確認適用規定。",
+    "source_title": "哪些動物產品禁止攜帶入境？（農業部動植物防疫檢疫署）",
+    "source_url": "https://www.aphia.gov.tw/ws.php?id=18065"
+  }
+]
