@@ -4,4 +4,4 @@ ultralytics
 git+https://github.com/huggingface/transformers.git
 accelerate
 qwen-vl-utils
-pillow
+easyocr
