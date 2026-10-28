@@ -17,4 +17,3 @@ AI-powered Taiwan entry item inspection system
 - AI 影像辨識模型
 - Streamlit
 - GitHub
-複製專題介紹
