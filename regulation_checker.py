@@ -48,7 +48,6 @@ def check_regulations(item_info):
     try:
         with DATA_FILE.open("r", encoding="utf-8") as file:
             rules = json.load(file)
-
         if not isinstance(rules, list):
             raise ValueError("規則資料必須是清單")
 
@@ -56,28 +55,62 @@ def check_regulations(item_info):
         result["summary"] = "規則資料無法讀取，暫時無法查詢。"
         result["reasons"].append("請檢查規則檔案是否存在及格式是否正確。")
         return result
-
     # 4. 比對物品名稱與成分
-    text = f"{name or ''} {ingredients or ''}".casefold()
+    name_text = str(name or "").casefold()
+    ingredients_text = str(ingredients or "").casefold()
+    text = f"{name_text} {ingredients_text}"
+
     matched_rules = []
+    matched_product_types = []
 
     for rule in rules:
         if not isinstance(rule, dict):
             continue
 
+    # 原有法規關鍵字比對
         keywords = rule.get("keywords", [])
 
-        if not isinstance(keywords, list):
+        if isinstance(keywords, list):
+            matched_keywords = [
+                keyword
+                for keyword in keywords
+                if isinstance(keyword, str)
+                and keyword
+                and keyword.casefold() in text
+            ]
+
+            if matched_keywords:
+                matched_rules.append(rule)
+
+        # 商品分類關鍵字比對
+        product_types = rule.get("product_types", {})
+
+        if not isinstance(product_types, dict):
             continue
 
-        if any(
-            isinstance(keyword, str)
-            and keyword
-            and keyword.casefold() in text
-            for keyword in keywords
-        ):
-            matched_rules.append(rule)
+        for product_id, product_info in product_types.items():
+            if not isinstance(product_info, dict):
+                continue
 
+            product_keywords = product_info.get("keywords", [])
+
+            if not isinstance(product_keywords, list):
+                continue
+
+            if any(
+                isinstance(keyword, str)
+                and keyword
+                and keyword.casefold() in name_text
+                for keyword in product_keywords
+            ):
+                matched_product_types.append({
+                    "id": product_id,
+                    "name": product_info.get("name")
+                })
+
+                # 商品分類命中時，也將所屬法規規則加入結果
+                if rule not in matched_rules:
+                    matched_rules.append(rule)
     # 5. 整理官方來源
     for rule in matched_rules:
     # 先收集主要來源
@@ -104,10 +137,13 @@ def check_regulations(item_info):
                 and isinstance(url, str)
                 and url.startswith("https://")
             ):
-                result["sources"].append({
+                source_item = {
                     "title": title,
                     "url": url
-                })
+                }
+
+                if source_item not in result["sources"]:
+                    result["sources"].append(source_item)
 
     # 6. 決定初步結果
     if matched_rules and result["sources"]:
@@ -126,5 +162,5 @@ def check_regulations(item_info):
         result["reasons"].append(
             "未找到可用的相關規則，不代表允許入境。"
         )
-
+    result["matched_product_types"] = matched_product_types
     return result
