@@ -90,7 +90,12 @@
       "乾無花果",
       "乾香菇",
       "乾燥蔬菜",
-      "乾燥香辛料"
+      "乾燥香辛料",
+      "蘭花",
+      "orchid",
+      "鮮花",
+      "切花",
+      "盆栽"
     ],
     "legal_basis_keywords": [
       "鮮果實禁止旅客攜帶入境",
@@ -138,7 +143,13 @@
     ],
     "summary": "蛋類及乳製品須依產品種類、加工方式、來源地及適用檢疫條件確認；關鍵字命中不代表禁止或允許入境。",
     "source_title": "哪些動物產品禁止攜帶入境？（農業部動植物防疫檢疫署）",
-    "source_url": "https://www.aphia.gov.tw/ws.php?id=18065"
+    "source_url": "https://www.aphia.gov.tw/ws.php?id=18065",
+    "additional_sources": [
+    {
+        "title": "旅客攜帶食品入出境規定（臺北關）",
+        "url": "https://web.customs.gov.tw/taipei/singlehtml/148?cntId=cus2_179200_148"
+    }
+    ]
   },
   {
     "id": "processed_foods",
