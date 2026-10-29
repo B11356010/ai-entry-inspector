@@ -80,18 +80,34 @@ def check_regulations(item_info):
 
     # 5. 整理官方來源
     for rule in matched_rules:
-        title = rule.get("source_title")
-        url = rule.get("source_url")
+    # 先收集主要來源
+        sources = [{
+        "title": rule.get("source_title"),
+        "url": rule.get("source_url")
+    }]
 
-        if (
-            isinstance(title, str)
-            and isinstance(url, str)
-            and url.startswith("https://")
-        ):
-            result["sources"].append({
-                "title": title,
-                "url": url
-            })
+    # 再收集額外來源
+        additional_sources = rule.get("additional_sources", [])
+        if isinstance(additional_sources, list):
+            sources.extend(
+            source for source in additional_sources
+            if isinstance(source, dict)
+            )
+
+    # 檢查來源格式
+        for source in sources:
+            title = source.get("title")
+            url = source.get("url")
+
+            if (
+                isinstance(title, str)
+                and isinstance(url, str)
+                and url.startswith("https://")
+            ):
+                result["sources"].append({
+                    "title": title,
+                    "url": url
+                })
 
     # 6. 決定初步結果
     if matched_rules and result["sources"]:

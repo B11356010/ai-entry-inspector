@@ -12,5 +12,133 @@
     "summary": "肉類及加工肉製品涉及動物檢疫限制，須確認適用規定。",
     "source_title": "哪些動物產品禁止攜帶入境？（農業部動植物防疫檢疫署）",
     "source_url": "https://www.aphia.gov.tw/ws.php?id=18065"
+  },
+    {
+    "id": "seafood_products",
+    "category": "animal_quarantine",
+    
+    "keywords": [
+      "魚皮",
+      "炸魚皮",
+      "鹹蛋魚皮",
+      "Fish Skin",
+      "Fish Skin Snack",
+      "Fish Crackers",
+      "魚乾",
+      "魚鬆",
+      "魚酥",
+      "魚板",
+      "魚類罐頭",
+      "魷魚片",
+      "魷魚絲",
+      "蝦醬",
+      "蝦膏",
+      "魚子醬",
+      "活魚",
+      "未去除內臟魚產品"
+    ],
+    "summary": "水產品須依產品種類、成分、加工方式及適用檢疫條件確認。官方資料列出部分加工調製水產品為無須動物檢疫的例子，也列出特定魚產品的檢疫要求；關鍵字命中不代表所有同類產品均適用相同規定。",
+    "source_title": "旅客攜帶食品入出境規定（臺北關）",
+    "source_url": "https://web.customs.gov.tw/taipei/singlehtml/148?cntId=cus2_179200_148"
+  },
+  {
+    "id": "plant_products",
+    "category": "plant_quarantine",
+    "keywords": [
+      "新鮮水果",
+      "鮮果實",
+      "芒果",
+      "蘋果",
+      "香蕉",
+      "橘子",
+      "柑橘",
+      "荔枝",
+      "龍眼",
+      "山竹",
+      "紅毛丹",
+      "新鮮蔬菜",
+      "植物種子",
+      "種苗",
+      "活植物",
+      "帶土植物",
+      "土壤",
+      "葡萄乾",
+      "龍眼乾",
+      "椰棗乾",
+      "乾無花果",
+      "乾香菇",
+      "乾燥蔬菜",
+      "乾燥香辛料"
+    ],
+    "legal_basis_keywords": [
+      "鮮果實禁止旅客攜帶入境",
+      "土壤及附有土壤之植物",
+      "有條件輸入植物及植物產品",
+      "加工乾燥植物產品免申請檢疫"
+    ],
+    "source_title": "入境旅客攜帶植物及其產品檢疫（農業部動植物防疫檢疫署）",
+    "source_url": "https://www.aphia.gov.tw/ws.php?font_size=normal&id=10733",
+    "additional_sources": [
+    {
+        "title": "旅客攜帶椰棗乾等水果乾，無須申請檢疫（農業部動植物防疫檢疫署）",
+        "url": "https://www.aphia.gov.tw/theme_data.php?id=21433&theme=NewInfoListWS"
+    }
+    ]
+  },
+  {
+    "id": "egg_dairy_products",
+    "category": "animal_quarantine",
+    "keywords": [
+      "生蛋",
+      "雞蛋",
+      "鴨蛋",
+      "鹹蛋",
+      "皮蛋",
+      "蛋黃",
+      "蛋粉",
+      "液蛋",
+      "蛋白粉",
+      "生乳",
+      "鮮乳",
+      "保久乳",
+      "奶粉",
+      "乳清粉",
+      "起司",
+      "乳酪",
+      "奶油",
+      "煉乳",
+      "乳脂",
+      "Milk Powder",
+      "Whey Powder",
+      "Cheese",
+      "Egg Powder",
+      "Liquid Egg"
+    ],
+    "summary": "蛋類及乳製品須依產品種類、加工方式、來源地及適用檢疫條件確認；關鍵字命中不代表禁止或允許入境。",
+    "source_title": "哪些動物產品禁止攜帶入境？（農業部動植物防疫檢疫署）",
+    "source_url": "https://www.aphia.gov.tw/ws.php?id=18065"
+  },
+  {
+    "id": "processed_foods",
+    "category": "food_import_rules",
+    "keywords": [
+      "含肉泡麵",
+      "含肉速食麵",
+      "含肉湯包",
+      "含肉湯底",
+      "含肉月餅",
+      "肉粽",
+      "水餃",
+      "食品添加劑",
+      "食用香料",
+      "嬰兒奶粉",
+      "嬰兒配方食品",
+      "錠狀食品",
+      "膠囊狀食品",
+      "高溫滅菌罐頭"
+    ],
+    "summary": "加工食品須依成分、製造方式、產品類型及個人自用限量確認適用規定；含肉食品、食品添加劑、香料及特定食品可能涉及不同的檢疫或食品輸入規定。",
+    "source_title": "旅客攜帶食品入出境規定（臺北關）",
+    "source_url": "https://web.customs.gov.tw/taipei/singlehtml/148?cntId=cus2_179200_148"
   }
 ]
