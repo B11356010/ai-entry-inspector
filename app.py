@@ -1,71 +1,96 @@
+"""
+app.py
+AI 入境物品檢查系統 - Streamlit 本地端主程式
+
+流程：
+1. 上傳行李照片並執行物品辨識
+2. 選擇要進一步查核的物品
+3. 上傳該物品標籤照片並執行 OCR
+4. 編輯/補充物品資訊後查詢本地法規規則
+"""
+
 import streamlit as st
 from PIL import Image
-from image_model import detect_objects
 
 st.set_page_config(
-    page_title="AI 入境物品檢查",
+    page_title="AI 入境物品檢查系統",
     page_icon="🧳",
-    layout="centered"
+    layout="wide",
 )
 
-st.title("🧳 AI 入境物品檢查")
-st.write(
-    "上傳打開的行李箱照片，"
-    "讓 AI 嘗試辨識其中的物品。"
+# UI 模組只負責顯示結果
+from ui_components import (
+    render_detection_results,
+    render_ocr_results,
+    render_regulation_result,
 )
+
+
+def init_state():
+    defaults = {
+        "detections": [],
+        "annotated_image": None,
+        "detected_image_name": None,
+        "ocr_result": None,
+        "ocr_annotated_image": None,
+        "ocr_text": "",
+        "regulation_result": None,
+        "selected_item": None,
+    }
+    for key, value in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
+
+
+def reset_after_new_luggage():
+    st.session_state.detections = []
+    st.session_state.annotated_image = None
+    st.session_state.detected_image_name = None
+    st.session_state.ocr_result = None
+    st.session_state.ocr_annotated_image = None
+    st.session_state.ocr_text = ""
+    st.session_state.regulation_result = None
+    st.session_state.selected_item = None
+
+
+def safe_image(uploaded_file):
+    """將 Streamlit 上傳檔轉成 RGB PIL Image。"""
+    return Image.open(uploaded_file).convert("RGB")
+
+
+init_state()
+
+# -------------------------
+# 頁面標題
+# -------------------------
+st.title("🧳 AI 入境物品檢查系統")
+st.caption("行李物品辨識・標籤文字擷取・台灣入境規定提醒")
 
 st.info(
-    "目前是第一階段測試版："
-    "先辨識常見物品，尚未判斷物品能否攜帶入境台灣。"
+    "本系統為專題展示與初步查詢工具。AI 辨識及關鍵字比對可能有誤，"
+    "不代表海關核准或正式法律判定；請以主管機關最新公告及現場查驗為準。"
 )
 
-uploaded_file = st.file_uploader(
-    "請上傳行李箱照片",
-    type=["jpg", "jpeg", "png"]
+with st.sidebar:
+    st.header("使用流程")
+    st.markdown(
+        "1. 上傳行李照片\n"
+        "2. 執行 AI 物品辨識\n"
+        "3. 選擇需要查核的物品\n"
+        "4. 上傳標籤照片並執行 OCR\n"
+        "5. 補充資料並查詢規定"
+    )
+    st.divider()
+    st.caption("本地端執行：請保持啟動 Streamlit 的終端機開啟。")
+
+# -------------------------
+# 1. 行李照片與物品辨識
+# -------------------------
+st.header("① 行李物品辨識")
+
+luggage_file = st.file_uploader(
+    "請上傳行李照片",
+    type=["jpg", "jpeg", "png", "webp"],
+    key="luggage_uploader",
+    help="建議使用光線充足、物品盡量分開且清楚可見的照片。",
 )
-
-if uploaded_file is not None:
-    image = Image.open(uploaded_file).convert("RGB")
-
-    st.subheader("原始照片")
-    st.image(image, use_container_width=True)
-
-    if st.button("開始辨識物品", type="primary"):
-        with st.spinner("AI 正在辨識，第一次載入模型可能需要較久……"):
-            try:
-                detections, annotated_image = detect_objects(image)
-
-                st.subheader("AI 辨識結果")
-                st.image(
-                    annotated_image,
-                    caption="方框表示 AI 偵測到的物品",
-                    use_container_width=True
-                )
-
-                if detections:
-                    st.success(
-                        f"共偵測到 {len(detections)} 個物品"
-                    )
-
-                    for index, item in enumerate(detections, start=1):
-                        st.write(
-                            f"{index}. {item['label']} "
-                            f"（信心分數：{item['score']:.1%}）"
-                        )
-                else:
-                    st.warning(
-                        "沒有偵測到物品，"
-                        "請嘗試更清楚、光線更好的照片。"
-                    )
-
-                st.warning(
-                    "注意：辨識結果可能錯誤或漏掉物品。"
-                    "偵測到物品不代表它違規，"
-                    "未偵測到也不代表行李內沒有受管制物品。"
-                )
-
-            except Exception as e:
-                st.error(
-                    "辨識失敗，請稍後再試。"
-                    f"錯誤訊息：{e}"
-                )
