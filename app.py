@@ -95,6 +95,71 @@ luggage_file = st.file_uploader(
     help="建議使用光線充足、物品盡量分開且清楚可見的照片。",
 )
 
+if luggage_file is not None:
+    try:
+        # 讀取上傳的行李照片
+        luggage_image = Image.open(luggage_file).convert("RGB")
+
+        st.image(
+            luggage_image,
+            caption="已上傳的行李照片",
+            use_container_width=True
+        )
+
+        # 開始辨識按鈕
+        if st.button(
+            "🔍 開始辨識行李物品",
+            type="primary",
+            use_container_width=True,
+            key="detect_button"
+        ):
+            with st.spinner("AI 正在辨識行李物品，請稍候……"):
+                from image_model import detect_objects
+
+                detections, annotated_image = detect_objects(luggage_image)
+
+                st.session_state.detections = detections
+                st.session_state.annotated_image = annotated_image
+                st.session_state.detected_image_name = luggage_file.name
+
+                st.success("物品辨識完成！")
+
+        # 顯示辨識結果
+        if st.session_state.detected_image_name == luggage_file.name:
+            render_detection_results(
+                st.session_state.detections,
+                st.session_state.annotated_image
+            )
+
+    except Exception as e:
+        st.error(f"執行失敗：{type(e).__name__}: {e}")
+        st.exception(e)
+
+else:
+    st.info("請先上傳一張行李照片。")
+
+# -------------------------
+# 2. 選擇物品、OCR
+# -------------------------
+st.divider()
+st.header("② 物品標籤文字辨識")
+
+detections = st.session_state.detections
+
+if isinstance(detections, list) and detections:
+    labels = []
+    for idx, item in enumerate(detections):
+        if isinstance(item, dict):
+            label = str(item.get("label", "未知物品"))
+            score = item.get("score", 0)
+            try:
+                display = f"{idx + 1}. {label}（模型分數 {float(score):.1%}）"
+            except (TypeError, ValueError):
+                display = f"{idx + 1}. {label}"
+            labels.append((display, label))
+
+    if labels:
+        selected_display = st.selectbox(
             "選擇要進一步查核的物品",
             options=[item[0] for item in labels],
             key="selected_detection_display",
