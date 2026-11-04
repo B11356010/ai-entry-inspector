@@ -59,6 +59,8 @@ LABEL_ZH = {
 
 # 法規判定狀態 -> (顯示文字, 圖示, Streamlit 顏色)
 STATUS_STYLE = {
+    "needs_review": ("已找到相關規定，需進一步確認", "⚠️", "orange"),
+    "insufficient_info": ("資訊不足，請人工確認", "❔", "gray"),
     "allowed":    ("可攜帶入境", "✅", "green"),
     "declare":    ("需申報 / 進一步查核", "⚠️", "orange"),
     "prohibited": ("禁止攜帶入境", "⛔", "red"),
