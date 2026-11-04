@@ -42,6 +42,7 @@ def check_regulations(item_info):
     )
     name = item_info.get("name")
     ingredients = item_info.get("ingredients")
+    result["name"] = str(name or "").strip()
 
     # 3. 讀取規則資料
     try:
