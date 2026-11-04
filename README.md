@@ -86,4 +86,3 @@ python -c "import torch; print(torch.cuda.is_available())"
 streamlit run app.py
 ```
 
-請依照專案實際的 Streamlit 主程式檔名調整啟動指令。
