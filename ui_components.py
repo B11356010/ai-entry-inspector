@@ -195,7 +195,7 @@ def _render_one_rule(result):
     """顯示單一物品的法規判定。"""
     item = _get(result, "item", "item_name", "name", default="未知物品")
     status = str(_get(result, "status", "result", default="unknown")).lower()
-    reason = _get(result, "reason", "description", "message")
+    reason = _get(result, "reason", "description", "message", "summary")
     sources = _get(result, "sources", "source_urls", "source_url", "source", "url", default=[])
 
     text, icon, color = STATUS_STYLE.get(status, STATUS_STYLE["unknown"])
@@ -205,6 +205,12 @@ def _render_one_rule(result):
 
         if reason:
             st.write(f"理由：{reason}")
+
+        # 顯示詳細判定原因
+        reasons = result.get("reasons", [])
+        if isinstance(reasons, list):
+            for r in reasons:
+                st.write(f"• {r}")
 
         # 官方來源（可以是字串、字串清單，或 {"title", "url"} 清單）
         if isinstance(sources, (str, dict)):
