@@ -1,1 +1,34 @@
+# Python 暫存檔
+__pycache__/
+*.py[cod]
+*.pyo
 
+# 虛擬環境
+venv/
+.venv/
+env/
+
+# 個人環境設定與機密
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# 模型權重檔（避免大型模型被上傳到 GitHub）
+*.pt
+*.pth
+*.onnx
+
+# 測試及執行產生的結果
+.pytest_cache/
+.coverage
+htmlcov/
+result.jpg
+annotated_output.jpg
+
+# 系統檔案
+.DS_Store
+Thumbs.db
+
+# 編輯器設定
+.vscode/
